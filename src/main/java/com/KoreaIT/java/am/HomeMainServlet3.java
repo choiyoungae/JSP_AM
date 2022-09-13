@@ -27,13 +27,19 @@ public class HomeMainServlet3 extends HttpServlet {
 			inputedLimit = "9";
 		}
 		
+		String inputedColor = request.getParameter("color");
+		
+		if(inputedColor == null) {
+			inputedColor = "black";
+		}
+		
 		int dan = Integer.parseInt(inputedDan);
 		int limit = Integer.parseInt(inputedLimit);
 
-		response.getWriter().append(String.format("== %d단 ==<br />", dan));
+		response.getWriter().append(String.format("<div style='color:%s'>== %d단 ==</div>", inputedColor, dan));
 		
 		for(int i=1; i<=limit; i++) {
-			response.getWriter().append(String.format("%d X %d = %d<br>", dan, i, dan*i));
+			response.getWriter().append(String.format("<div style='color:%s'>%d X %d = %d</div>", inputedColor, dan, i, dan*i));
 		}
 	}
 
