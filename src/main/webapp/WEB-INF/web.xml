@@ -39,4 +39,14 @@
     <servlet-name>ArticleDetailServlet</servlet-name>
     <url-pattern>/ArticleDetailServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>MainPageServlet</display-name>
+    <servlet-name>MainPageServlet</servlet-name>
+    <servlet-class>com.KoreaIT.java.am.servlet.MainPageServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>MainPageServlet</servlet-name>
+    <url-pattern>/MainPageServlet</url-pattern>
+  </servlet-mapping>
 </web-app>
