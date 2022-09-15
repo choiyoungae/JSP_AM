@@ -5,6 +5,8 @@
     pageEncoding="UTF-8"%>
 <%
 List<Map<String, Object>> articleRows = (List<Map<String, Object>>)request.getAttribute("articleRows");
+int pageCountNum = (int)request.getAttribute("pageCountNum");
+int currentPage = (int)request.getAttribute("page");
 %>
 <!DOCTYPE html>
 <html>
@@ -14,30 +16,53 @@ List<Map<String, Object>> articleRows = (List<Map<String, Object>>)request.getAt
 </head>
 <body>
 	
-	<h1>게시물 리스트</h1>
+	<div class="wrap">
+		<h1>게시물 리스트</h1>
+		
+		<table border="1" bordercolor="navy">
+			<colgroup>
+				<col width="50"/>
+				<col width=250"/>
+				<col width="200"/>
+			</colgroup>
+			<tr>
+				<th>번호</th>
+				<th>제목</th>
+				<th>날짜</th>
+				<th>삭제</th>
+			</tr>
+		
+			<% for(Map<String, Object> articleRow : articleRows) { %>
+			<tr>
+				<td><%=articleRow.get("id") %></td>
+				<td><a href="detail?id=<%=(int)articleRow.get("id") %>"><%=articleRow.get("title") %></a></td>
+				<td><%=articleRow.get("regDate") %></td>
+				<td><a href="doDelete?id=<%=articleRow.get("id") %>">삭제하기</a></td>
+			</tr>
+			<% } %>
+		</table>
+		
+		<div class="page">
+			<% for(int i=1; i<=pageCountNum; i++) { %>
+			<a class="<%= currentPage == i ? "current" : ""%>" href="list?page=<%=i %>"><%=i %></a>
+			<% } %>
+		</div>
+	</div>
 	
-	<table border="1" bordercolor="navy">
-		<colgroup>
-			<col width="50"/>
-			<col width="50"/>
-			<col width="200"/>
-		</colgroup>
-		<tr>
-			<th>번호</th>
-			<th>제목</th>
-			<th>날짜</th>
-			<th>삭제</th>
-		</tr>
-	
-		<% for(Map<String, Object> articleRow : articleRows) { %>
-		<tr>
-			<td><%=articleRow.get("id") %></td>
-			<td><a href="detail?id=<%=(int)articleRow.get("id") %>"><%=articleRow.get("title") %></a></td>
-			<td><%=articleRow.get("regDate") %></td>
-			<td><a href="doDelete?id=<%=articleRow.get("id") %>">삭제하기</a></td>
-		</tr>
-		<% } %>
-	</table>
-	
+	<style type="text/css">
+		.wrap {
+			text-align : center;
+		}
+		table {
+			position : relative;
+			left : 50%;
+			transform : translateX(-50%);
+			margin-bottom : 20px;
+		}
+		.page a.current {
+			color : red;
+			font-weight : bold;
+		}
+	</style>
 </body>
 </html>
