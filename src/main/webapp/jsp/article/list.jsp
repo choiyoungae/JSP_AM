@@ -19,7 +19,7 @@ int currentPage = (int)request.getAttribute("page");
 	<div class="wrap">
 		<h1>게시물 리스트</h1>
 		
-		<div><a href="doWrite">게시물 작성하기</a></div>
+		<div><a href="write">글쓰기</a></div>
 		
 		<table border="1" bordercolor="navy">
 			<colgroup>
@@ -59,7 +59,7 @@ int currentPage = (int)request.getAttribute("page");
 			position : relative;
 			left : 50%;
 			transform : translateX(-50%);
-			margin-bottom : 20px;
+			margin : 20px 0;
 		}
 		.page a.current {
 			color : red;

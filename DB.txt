@@ -10,20 +10,32 @@ CREATE TABLE article(
     `body` TEXT NOT NULL
 );
 
-# 게시글 테스트데이터 생성
+# 게시글 테스트 데이터 생성
 INSERT INTO article
 SET regDate = NOW(),
-title = '제목1',
-`body` = '내용1';
+title = CONCAT('제목__', RAND()),
+`body` = CONCAT('내용__', RAND())
 
-INSERT INTO article 
-SET regDate = NOW(),
-title = '제목2',
-`body` = '내용2';
+-- INSERT INTO article
+-- SET regDate = NOW(),
+-- title = '제목1',
+-- `body` = '내용1';
+-- 
+-- INSERT INTO article
+-- SET regDate = NOW(),
+-- title = '제목2',
+-- `body` = '내용2';
+-- 
+-- INSERT INTO article
+-- SET regDate = NOW(),
+-- title = '제목3',
+-- `body` = '내용3';
+-- 
+-- INSERT INTO article
+-- SET regDate = NOW(),
+-- title = '제목4',
+-- `body` = '내용4';
 
-INSERT INTO article 
-SET regDate = NOW(),
-title = '제목3',
-`body` = '내용3';
+SELECT * FROM article order by id desc;
 
-SELECT * FROM article;
+select count(*) from article;

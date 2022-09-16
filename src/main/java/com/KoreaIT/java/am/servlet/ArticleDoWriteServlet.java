@@ -18,6 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/article/doWrite")
 public class ArticleDoWriteServlet extends HttpServlet {
 
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -46,13 +47,6 @@ public class ArticleDoWriteServlet extends HttpServlet {
 
 			String title = request.getParameter("title");
 			String body = request.getParameter("body");
-			
-//			if(request.getParameter("title") != null) {
-//				title = request.getParameter("title");
-//			}
-//			if(request.getParameter("body") != null) {
-//				title = request.getParameter("body");
-//			}
 						
 			SecSql sql = SecSql.from("INSERT INTO article");
 			sql.append("SET regDate = NOW(),");
@@ -62,8 +56,6 @@ public class ArticleDoWriteServlet extends HttpServlet {
 			int id = DBUtil.insert(conn, sql);
 			
 			response.getWriter().append(String.format("<script>alert('%d번 글이 작성되었습니다.'); location.replace('list');</script>", id));
-
-//			request.getRequestDispatcher("/jsp/article/doWrite.jsp").forward(request, response);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -76,6 +68,13 @@ public class ArticleDoWriteServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		doGet(request, response);
+		
 	}
 
 }
