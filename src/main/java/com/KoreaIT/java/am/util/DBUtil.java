@@ -159,6 +159,7 @@ public class DBUtil {
 			stmt = sql.getPreparedStatement(dbConn);
 			affectedRows = stmt.executeUpdate();
 		} catch (SQLException e) {
+			System.out.println("===== QUERY 예외 발생 =====" + sql);
 			throw new SQLErrorException("SQL 예외, SQL : " + sql, e);
 		} finally {
 			if (stmt != null) {

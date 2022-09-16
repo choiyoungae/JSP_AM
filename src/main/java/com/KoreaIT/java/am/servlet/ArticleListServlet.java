@@ -55,8 +55,8 @@ public class ArticleListServlet extends HttpServlet {
 			SecSql articleCountSql = SecSql.from("SELECT COUNT(*)");
 			articleCountSql.append("FROM article");
 			
-			double articleCountNum = DBUtil.selectRowIntValue(conn, articleCountSql);
-			int pageCountNum = (int)Math.ceil(articleCountNum / itemsInAPage);
+			int articleCountNum = DBUtil.selectRowIntValue(conn, articleCountSql);
+			int pageCountNum = (int)Math.ceil((double)articleCountNum / itemsInAPage);
 			
 			SecSql sql = SecSql.from("SELECT *");
 			sql.append("FROM article");
