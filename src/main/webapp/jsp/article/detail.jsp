@@ -15,6 +15,9 @@ Map<String, Object> articleRow = (Map<String, Object>)request.getAttribute("arti
 	
 	<h1><%=(int)articleRow.get("id") %>번 게시물</h1>
 	
+	<div><a href="modify?id=<%=articleRow.get("id") %>">수정하기</a></div>
+	<div><a href="delete?id=<%=articleRow.get("id") %>">삭제하기</a></div>
+	
 	<div>
 		<p>번호 : <%=(int)articleRow.get("id") %></p>
 		<p>날짜 : <%=(LocalDateTime)articleRow.get("regDate") %></p>
