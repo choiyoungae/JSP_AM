@@ -32,6 +32,7 @@ int currentPage = (int)request.getAttribute("page");
 				<th>제목</th>
 				<th>날짜</th>
 				<th>삭제</th>
+				<th>수정</th>
 			</tr>
 		
 			<% for(Map<String, Object> articleRow : articleRows) { %>
@@ -40,6 +41,7 @@ int currentPage = (int)request.getAttribute("page");
 				<td><a href="detail?id=<%=(int)articleRow.get("id") %>"><%=articleRow.get("title") %></a></td>
 				<td><%=articleRow.get("regDate") %></td>
 				<td><a href="doDelete?id=<%=articleRow.get("id") %>">삭제하기</a></td>
+				<td><a href="modify?id=<%=articleRow.get("id") %>">수정하기</a></td>
 			</tr>
 			<% } %>
 		</table>
