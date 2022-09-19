@@ -16,8 +16,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/article/doWrite")
-public class ArticleDoWriteServlet extends HttpServlet {
+@WebServlet("/article/doJoin")
+public class ArticleDoJoinServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -43,17 +43,19 @@ public class ArticleDoWriteServlet extends HttpServlet {
 		try {
 			conn = DriverManager.getConnection(Config.getDBUrl(), Config.getDBUser(), Config.getDBPassword());
 
-			String title = request.getParameter("title");
-			String body = request.getParameter("body");
-						
-			SecSql sql = SecSql.from("INSERT INTO article");
-			sql.append("SET regDate = NOW(),");
-			sql.append("title = ?,", title);
-			sql.append("body = ?", body);
-
-			int id = DBUtil.insert(conn, sql);
+			String loginId = request.getParameter("loginId");
+			String loginPw = request.getParameter("loginPw"); 
+			String name = request.getParameter("name"); 
 			
-			response.getWriter().append(String.format("<script>alert('%d번 글이 작성되었습니다.'); location.replace('list');</script>", id));
+			SecSql sql = SecSql.from("INSERT INTO `member`");
+			sql.append("SET regDate = NOW(),");
+			sql.append("loginId = ?,", loginId);
+			sql.append("loginPw = ?,", loginPw);
+			sql.append("`name` = ?;", name);
+			
+			DBUtil.insert(conn, sql);
+			
+			response.getWriter().append("<script>alert('회원가입이 완료되었습니다.'); location.replace('list');</script>");
 			
 		} catch (SQLException e) {
 			e.printStackTrace();

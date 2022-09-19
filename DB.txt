@@ -10,11 +10,36 @@ CREATE TABLE article(
     `body` TEXT NOT NULL
 );
 
+# 회원 테이블 생성
+CREATE TABLE `member`(
+    id INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    regDate DATETIME NOT NULL,
+    loginId CHAR(20) NOT NULL,
+    loginPw CHAR(100) NOT NULL,
+    `name` CHAR(200) NOT NULL
+)
+
+# 회원 테스트 데이터 생성
+INSERT INTO `member`
+SET regDate = NOW(),
+loginId = "hi",
+loginPw = "bye",
+`name` = "me";
+
+SELECT * FROM `member`;
+
+DROP TABLE `member`;
+
 # 게시글 테스트 데이터 생성
 INSERT INTO article
 SET regDate = NOW(),
 title = CONCAT('제목__', RAND()),
-`body` = CONCAT('내용__', RAND())
+`body` = CONCAT('내용__', RAND());
+
+# 현재 table에 있는 행들을 2배 복사 하는 것
+INSERT INTO article (regDate, title, `body`)
+SELECT NOW(), CONCAT('제목__', RAND()), `body` = CONCAT('내용__', RAND())
+FROM article;
 
 -- INSERT INTO article
 -- SET regDate = NOW(),
@@ -36,6 +61,6 @@ title = CONCAT('제목__', RAND()),
 -- title = '제목4',
 -- `body` = '내용4';
 
-SELECT * FROM article order by id desc;
+SELECT * FROM article ORDER BY id DESC;
 
-select count(*) from article;
+SELECT COUNT(*) FROM article;

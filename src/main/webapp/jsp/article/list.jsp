@@ -17,6 +17,9 @@ int currentPage = (int)request.getAttribute("page");
 <body>
 	
 	<div class="wrap">
+		
+		<div><a href="memberJoin">회원가입</a></div>
+		
 		<h1>게시물 리스트</h1>
 		
 		<div><a href="write">글쓰기</a></div>

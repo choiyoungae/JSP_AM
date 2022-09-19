@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 import com.KoreaIT.java.am.config.Config;
@@ -16,10 +17,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/article/doWrite")
-public class ArticleDoWriteServlet extends HttpServlet {
+@WebServlet("/article/memberJoin")
+public class ArticleMemberJoinServlet extends HttpServlet {
 
-	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -43,18 +43,14 @@ public class ArticleDoWriteServlet extends HttpServlet {
 		try {
 			conn = DriverManager.getConnection(Config.getDBUrl(), Config.getDBUser(), Config.getDBPassword());
 
-			String title = request.getParameter("title");
-			String body = request.getParameter("body");
-						
-			SecSql sql = SecSql.from("INSERT INTO article");
-			sql.append("SET regDate = NOW(),");
-			sql.append("title = ?,", title);
-			sql.append("body = ?", body);
+			SecSql sql = SecSql.from("SELECT *");
+			sql.append("FROM `member`");
 
-			int id = DBUtil.insert(conn, sql);
-			
-			response.getWriter().append(String.format("<script>alert('%d번 글이 작성되었습니다.'); location.replace('list');</script>", id));
-			
+			List<Map<String, Object>> memberRows = DBUtil.selectRows(conn, sql);
+
+			request.setAttribute("memberRows", memberRows);
+			request.getRequestDispatcher("/jsp/member/join.jsp").forward(request, response);
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -71,8 +67,6 @@ public class ArticleDoWriteServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		doGet(request, response);
-		
 	}
 
 }
