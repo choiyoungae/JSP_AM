@@ -5,7 +5,7 @@
     pageEncoding="UTF-8"%>
 <%
 List<Map<String, Object>> articleRows = (List<Map<String, Object>>)request.getAttribute("articleRows");
-int pageCountNum = (int)request.getAttribute("pageCountNum");
+int totalPage = (int)request.getAttribute("pageCountNum");
 int currentPage = (int)request.getAttribute("page");
 %>
 <!DOCTYPE html>
@@ -47,8 +47,24 @@ int currentPage = (int)request.getAttribute("page");
 		</table>
 		
 		<div class="page">
-			<% for(int i=1; i<=pageCountNum; i++) { %>
+			<% if(currentPage > 1) { %>
+			<a href="list?page=1">◀◀</a>
+			<% } %>
+			<% 
+			int pageSize = 5;
+			int from = currentPage - pageSize;
+			if(from < 1) {
+				from = 1;
+			}
+			int end = currentPage + pageSize;
+			if(end > totalPage) {
+				end = totalPage;
+			}
+			for(int i=from; i<=end; i++) { %>
 			<a class="<%= currentPage == i ? "current" : ""%>" href="list?page=<%=i %>"><%=i %></a>
+			<% } %>
+			<% if(currentPage < totalPage) { %>
+			<a href="list?page=<%= totalPage %>">▶▶</a>
 			<% } %>
 		</div>
 	</div>
