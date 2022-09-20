@@ -16,6 +16,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/article/doWrite")
 public class ArticleDoWriteServlet extends HttpServlet {
@@ -43,6 +44,21 @@ public class ArticleDoWriteServlet extends HttpServlet {
 
 		try {
 			conn = DriverManager.getConnection(Config.getDBUrl(), Config.getDBUser(), Config.getDBPassword());
+			
+			HttpSession session = request.getSession();
+			
+			boolean isLogined = false;
+			int loginedMemberId = -1;
+			
+			if(session.getAttribute("loginedMemberId") != null) {
+				isLogined = true;
+				loginedMemberId = (int)session.getAttribute("loginedMemberId");
+			}
+			
+			if(isLogined == false) {
+				response.getWriter().append("<script>alert('로그인이 필요한 기능입니다'); location.replace('list');</script>");
+				return;
+			}
 
 			String title = request.getParameter("title");
 			String body = request.getParameter("body");
@@ -50,7 +66,8 @@ public class ArticleDoWriteServlet extends HttpServlet {
 			SecSql sql = SecSql.from("INSERT INTO article");
 			sql.append("SET regDate = NOW(),");
 			sql.append("title = ?,", title);
-			sql.append("body = ?", body);
+			sql.append("body = ?,", body);
+			sql.append("memberId = ?", loginedMemberId);			
 
 			int id = DBUtil.insert(conn, sql);
 			
