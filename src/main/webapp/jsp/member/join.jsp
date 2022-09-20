@@ -68,6 +68,6 @@
 		<button type="submit">가입하기</button>
 	</form>	
 	
-	<div><a href="list">리스트로 돌아가기</a></div>
+	<div><a href="../article/list">리스트로 돌아가기</a></div>
 </body>
 </html>
