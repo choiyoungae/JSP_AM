@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 
 import com.KoreaIT.java.am.config.Config;
+import com.KoreaIT.java.am.exception.SQLErrorException;
 import com.KoreaIT.java.am.util.DBUtil;
 import com.KoreaIT.java.am.util.SecSql;
 
@@ -17,9 +17,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/article/memberJoin")
-public class ArticleMemberJoinServlet extends HttpServlet {
+@WebServlet("/article/doJoin")
+public class MemberDoJoinServlet extends HttpServlet {
 
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -43,16 +44,38 @@ public class ArticleMemberJoinServlet extends HttpServlet {
 		try {
 			conn = DriverManager.getConnection(Config.getDBUrl(), Config.getDBUser(), Config.getDBPassword());
 
-			SecSql sql = SecSql.from("SELECT *");
+			String loginId = request.getParameter("loginId");
+			String loginPw = request.getParameter("loginPw"); 
+			String name = request.getParameter("name"); 
+			
+			// 아이디 중복 검사
+			SecSql sql = SecSql.from("SELECT COUNT(*) AS cnt");
 			sql.append("FROM `member`");
-
-			List<Map<String, Object>> memberRows = DBUtil.selectRows(conn, sql);
-
-			request.setAttribute("memberRows", memberRows);
-			request.getRequestDispatcher("/jsp/member/join.jsp").forward(request, response);
-
+			sql.append("WHERE loginId = ?", loginId);
+			
+			boolean isJoinAvailableLoginId = DBUtil.selectRowIntValue(conn, sql) == 0;
+			
+			if(isJoinAvailableLoginId == false) {
+				response.getWriter().append(String
+						.format("<script>alert('%s는 이미 사용중인 아이디입니다'); location.replace('list');</script>", loginId));
+				return;
+			}
+			
+			// 회원가입 진행
+			sql = SecSql.from("INSERT INTO `member`");
+			sql.append("SET regDate = NOW(),");
+			sql.append("loginId = ?,", loginId);
+			sql.append("loginPw = ?,", loginPw);
+			sql.append("`name` = ?;", name);
+			
+			DBUtil.insert(conn, sql);
+			
+			response.getWriter().append("<script>alert('회원가입이 완료되었습니다.'); location.replace('list');</script>");
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (SQLErrorException e) {
+			e.getOrigin().printStackTrace();
 		} finally {
 			try {
 				if (conn != null && !conn.isClosed()) {
@@ -67,6 +90,8 @@ public class ArticleMemberJoinServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		doGet(request, response);
+		
 	}
 
 }

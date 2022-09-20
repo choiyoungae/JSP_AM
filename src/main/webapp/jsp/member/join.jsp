@@ -4,7 +4,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
-List<Map<String, Object>> memberRows = (List<Map<String, Object>>)request.getAttribute("memberRows");
 %>
 <!DOCTYPE html>
 <html>
@@ -41,15 +40,16 @@ List<Map<String, Object>> memberRows = (List<Map<String, Object>>)request.getAtt
 				form.loginPwConfirm.focus();
 				return;
 			}
-			if (form.loginPw.value != form.loginPwConfirm.value) {
-				alert('비밀번호가 일치하지 않습니다');
-				form.loginPw.focus();
-				return;
-			}
 			form.name.value = form.name.value.trim();
 			if (form.name.value.length == 0) {
 				alert('이름을 입력해주세요');
 				form.name.focus();
+				return;
+			}
+			// 비밀번호 확인
+			if (form.loginPw.value != form.loginPwConfirm.value) {
+				alert('비밀번호가 일치하지 않습니다');
+				form.loginPw.focus();
 				return;
 			}
 			form.submit();
