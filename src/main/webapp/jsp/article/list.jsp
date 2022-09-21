@@ -29,6 +29,7 @@ int currentPage = (int)request.getAttribute("page");
 			<colgroup>
 				<col width="50"/>
 				<col width=250"/>
+				<col width="150"/>
 				<col width="200"/>
 			</colgroup>
 			<tr>

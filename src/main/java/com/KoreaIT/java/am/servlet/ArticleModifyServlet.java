@@ -16,6 +16,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/article/modify")
 public class ArticleModifyServlet extends HttpServlet {
@@ -45,7 +46,40 @@ public class ArticleModifyServlet extends HttpServlet {
 
 			int id = Integer.parseInt(request.getParameter("id"));
 			
-			SecSql sql = SecSql.from("SELECT *");
+			// 현재 로그인된 사용자와 게시글 작성자가 같은 사람인지 확인
+
+			HttpSession session = request.getSession();
+			
+			Map<String, Object> loginedMemberRow = null;
+			
+			if(session.getAttribute("loginedMemberLoginId") != null) {
+				int loginedMemberId = (int)session.getAttribute("loginedMemberId");
+				
+				SecSql sql = SecSql.from("SELECT * FROM `member`");
+				sql.append("WHERE id = ?", loginedMemberId);
+				
+				loginedMemberRow = DBUtil.selectRow(conn, sql);
+			}
+			
+			SecSql sql = SecSql.from("SELECT memberId");
+			sql.append("FROM article");
+			sql.append("WHERE id = ?", id);
+			
+			int articleMemberId = DBUtil.selectRowIntValue(conn, sql);
+			
+			if(loginedMemberRow == null) {
+				response.getWriter().append("<script>alert('로그인이 필요한 기능입니다.'); history.back();</script>");
+				return;
+			}
+			
+			if((int)loginedMemberRow.get("id") != articleMemberId) {				
+				response.getWriter().append("<script>alert('본인이 작성한 글만 가능합니다.'); history.back();</script>");
+				return;
+			}
+			
+			// 게시글 수정 진행
+			
+			sql = SecSql.from("SELECT *");
 			sql.append("FROM article");
 			sql.append("WHERE id = ?", id);
 
