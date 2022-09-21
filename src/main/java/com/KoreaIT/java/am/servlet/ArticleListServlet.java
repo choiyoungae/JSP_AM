@@ -57,18 +57,16 @@ public class ArticleListServlet extends HttpServlet {
 			
 			int articleCountNum = DBUtil.selectRowIntValue(conn, articleCountSql);
 			int pageCountNum = (int)Math.ceil((double)articleCountNum / itemsInAPage);
-			
-			SecSql sql = SecSql.from("SELECT *");
-			sql.append("FROM article");
-			sql.append("ORDER BY id DESC");
+
+			// 게시글 작성자 보내기
+			SecSql sql = SecSql.from("SELECT A.*, M.name AS writer");
+			sql.append("FROM article AS A");
+			sql.append("INNER JOIN `member` AS M");
+			sql.append("ON A.memberId = M.id");
+			sql.append("ORDER BY A.id DESC");
 			sql.append("LIMIT ?, ?", limitFrom, itemsInAPage);
 
 			List<Map<String, Object>> articleRows = DBUtil.selectRows(conn, sql);
-			
-			sql = SecSql.from("SELECT *");
-			sql.append("FROM `member`");
-			
-			List<Map<String, Object>> memberRows = DBUtil.selectRows(conn, sql);
 			
 			HttpSession session = request.getSession();
 			
@@ -91,7 +89,6 @@ public class ArticleListServlet extends HttpServlet {
 			request.setAttribute("loginedMemberRow", loginedMemberRow);
 
 			request.setAttribute("articleRows", articleRows);
-			request.setAttribute("memberRows", memberRows);
 			request.setAttribute("pageCountNum", pageCountNum);
 			request.setAttribute("page", page);
 			request.getRequestDispatcher("/jsp/article/list.jsp").forward(request, response);

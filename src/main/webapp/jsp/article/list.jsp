@@ -45,17 +45,7 @@ int currentPage = (int)request.getAttribute("page");
 			<tr>
 				<td><%=articleRow.get("id") %></td>
 				<td><a href="detail?id=<%=(int)articleRow.get("id") %>"><%=articleRow.get("title") %></a></td>
-				<td>
-					<%
-					String writer = "";
-					for(Map<String, Object> memberRow : memberRows) {
-					if(memberRow.get("id") == articleRow.get("memberId")) {
-						writer = (String)memberRow.get("name");
-					}
-					}
-					%>
-					<%=writer %>
-				</td>
+				<td><%=articleRow.get("writer") %></td>
 				<td><%=articleRow.get("regDate") %></td>
 				<td><a href="delete?id=<%=articleRow.get("id") %>">삭제하기</a></td>
 				<td><a href="modify?id=<%=articleRow.get("id") %>">수정하기</a></td>
