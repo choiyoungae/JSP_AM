@@ -17,6 +17,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/article/list")
 public class ArticleListServlet extends HttpServlet {
@@ -63,8 +64,34 @@ public class ArticleListServlet extends HttpServlet {
 			sql.append("LIMIT ?, ?", limitFrom, itemsInAPage);
 
 			List<Map<String, Object>> articleRows = DBUtil.selectRows(conn, sql);
+			
+			sql = SecSql.from("SELECT *");
+			sql.append("FROM `member`");
+			
+			List<Map<String, Object>> memberRows = DBUtil.selectRows(conn, sql);
+			
+			HttpSession session = request.getSession();
+			
+			boolean isLogined = false;
+			int loginedMemberId = -1;
+			Map<String, Object> loginedMemberRow = null;
+			
+			if(session.getAttribute("loginedMemberLoginId") != null) {
+				isLogined = true;
+				loginedMemberId = (int)session.getAttribute("loginedMemberId");
+				
+				sql = SecSql.from("SELECT * FROM `member`");
+				sql.append("WHERE id = ?", loginedMemberId);
+				
+				loginedMemberRow = DBUtil.selectRow(conn, sql);
+			}
+			
+			request.setAttribute("isLogined", isLogined);
+			request.setAttribute("loginedMemberId", loginedMemberId);
+			request.setAttribute("loginedMemberRow", loginedMemberRow);
 
 			request.setAttribute("articleRows", articleRows);
+			request.setAttribute("memberRows", memberRows);
 			request.setAttribute("pageCountNum", pageCountNum);
 			request.setAttribute("page", page);
 			request.getRequestDispatcher("/jsp/article/list.jsp").forward(request, response);

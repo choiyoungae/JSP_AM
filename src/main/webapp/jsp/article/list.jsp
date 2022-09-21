@@ -5,6 +5,7 @@
     pageEncoding="UTF-8"%>
 <%
 List<Map<String, Object>> articleRows = (List<Map<String, Object>>)request.getAttribute("articleRows");
+List<Map<String, Object>> memberRows = (List<Map<String, Object>>)request.getAttribute("memberRows");
 int totalPage = (int)request.getAttribute("pageCountNum");
 int currentPage = (int)request.getAttribute("page");
 %>
@@ -17,6 +18,9 @@ int currentPage = (int)request.getAttribute("page");
 <body>
 	
 	<div class="wrap">
+		
+		<%@ include file="../part/topBar.jspf" %>
+	
 		<h1>게시물 리스트</h1>
 		
 		<div><a href="write">글쓰기</a></div>
@@ -30,6 +34,7 @@ int currentPage = (int)request.getAttribute("page");
 			<tr>
 				<th>번호</th>
 				<th>제목</th>
+				<th>작성자</th>
 				<th>날짜</th>
 				<th>삭제</th>
 				<th>수정</th>
@@ -39,6 +44,17 @@ int currentPage = (int)request.getAttribute("page");
 			<tr>
 				<td><%=articleRow.get("id") %></td>
 				<td><a href="detail?id=<%=(int)articleRow.get("id") %>"><%=articleRow.get("title") %></a></td>
+				<td>
+					<%
+					String writer = "";
+					for(Map<String, Object> memberRow : memberRows) {
+					if(memberRow.get("id") == articleRow.get("memberId")) {
+						writer = (String)memberRow.get("name");
+					}
+					}
+					%>
+					<%=writer %>
+				</td>
 				<td><%=articleRow.get("regDate") %></td>
 				<td><a href="delete?id=<%=articleRow.get("id") %>">삭제하기</a></td>
 				<td><a href="modify?id=<%=articleRow.get("id") %>">수정하기</a></td>

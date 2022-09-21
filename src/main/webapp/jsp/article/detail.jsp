@@ -12,6 +12,8 @@ Map<String, Object> articleRow = (Map<String, Object>)request.getAttribute("arti
 <title>게시물 상세보기</title>
 </head>
 <body>
+
+	<%@ include file="../part/topBar.jspf" %>
 	
 	<h1><%=(int)articleRow.get("id") %>번 게시물</h1>
 	

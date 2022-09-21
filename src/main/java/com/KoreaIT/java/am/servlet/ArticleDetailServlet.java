@@ -16,6 +16,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/article/detail")
 public class ArticleDetailServlet extends HttpServlet {
@@ -51,8 +52,28 @@ public class ArticleDetailServlet extends HttpServlet {
 
 			Map<String, Object> articleRow = DBUtil.selectRow(conn, sql);
 
+			HttpSession session = request.getSession();
+			
+			boolean isLogined = false;
+			int loginedMemberId = -1;
+			Map<String, Object> loginedMemberRow = null;
+			
+			if(session.getAttribute("loginedMemberLoginId") != null) {
+				isLogined = true;
+				loginedMemberId = (int)session.getAttribute("loginedMemberId");
+				
+				sql = SecSql.from("SELECT * FROM `member`");
+				sql.append("WHERE id = ?", loginedMemberId);
+				
+				loginedMemberRow = DBUtil.selectRow(conn, sql);
+			}
+			
+			request.setAttribute("isLogined", isLogined);
+			request.setAttribute("loginedMemberId", loginedMemberId);
+			request.setAttribute("loginedMemberRow", loginedMemberRow);
 			request.setAttribute("articleRow", articleRow);
 			request.getRequestDispatcher("/jsp/article/detail.jsp").forward(request, response);
+			
 
 		} catch (SQLException e) {
 			e.printStackTrace();

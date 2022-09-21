@@ -50,7 +50,7 @@ public class ArticleDoWriteServlet extends HttpServlet {
 			boolean isLogined = false;
 			int loginedMemberId = -1;
 			
-			if(session.getAttribute("loginedMemberId") != null) {
+			if(session.getAttribute("loginedMemberLoginId") != null) {
 				isLogined = true;
 				loginedMemberId = (int)session.getAttribute("loginedMemberId");
 			}
