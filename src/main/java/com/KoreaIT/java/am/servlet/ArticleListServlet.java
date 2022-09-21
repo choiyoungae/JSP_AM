@@ -58,7 +58,7 @@ public class ArticleListServlet extends HttpServlet {
 			int articleCountNum = DBUtil.selectRowIntValue(conn, articleCountSql);
 			int pageCountNum = (int)Math.ceil((double)articleCountNum / itemsInAPage);
 
-			// 게시글 작성자 보내기
+			// 게시글 작성자 포함한 게시글 보내기
 			SecSql sql = SecSql.from("SELECT A.*, M.name AS writer");
 			sql.append("FROM article AS A");
 			sql.append("INNER JOIN `member` AS M");

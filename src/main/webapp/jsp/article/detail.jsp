@@ -23,6 +23,7 @@ Map<String, Object> articleRow = (Map<String, Object>)request.getAttribute("arti
 	<div>
 		<p>번호 : <%=(int)articleRow.get("id") %></p>
 		<p>날짜 : <%=(LocalDateTime)articleRow.get("regDate") %></p>
+		<p>작성자 : <%=articleRow.get("writer") %></p>
 		<p>제목 : <%=articleRow.get("title") %></p>
 		<p>내용 : <%=articleRow.get("body") %></p>
 	</div>
