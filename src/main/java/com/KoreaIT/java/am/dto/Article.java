@@ -24,7 +24,7 @@ public class Article {
 		this.memberId = (int) row.get("memberId");
 		
 		if(row.get("extra__writer") != null) {
-			this.extra__writer = (String) row.get("writer");
+			this.extra__writer = (String) row.get("extra__writer");
 		}
 	}
 }
