@@ -6,7 +6,7 @@
 <%
 List<Map<String, Object>> articleRows = (List<Map<String, Object>>)request.getAttribute("articleRows");
 List<Map<String, Object>> memberRows = (List<Map<String, Object>>)request.getAttribute("memberRows");
-int totalPage = (int)request.getAttribute("pageCountNum");
+int totalPage = (int)request.getAttribute("totalPage");
 int currentPage = (int)request.getAttribute("page");
 %>
 <!DOCTYPE html>

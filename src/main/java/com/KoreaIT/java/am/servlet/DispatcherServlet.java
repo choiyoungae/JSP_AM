@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 
 import com.KoreaIT.java.am.config.Config;
+import com.KoreaIT.java.am.controller.ArticleController;
 import com.KoreaIT.java.am.exception.SQLErrorException;
 import com.KoreaIT.java.am.util.DBUtil;
 import com.KoreaIT.java.am.util.SecSql;
@@ -19,14 +19,23 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/article/list")
-public class ArticleListServlet extends HttpServlet {
+@WebServlet("/s/*")
+public class DispatcherServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 		response.setContentType("text/html; charset=UTF-8");
-
+		request.setCharacterEncoding("UTF-8");
+		
+		String requestUri = request.getRequestURI();
+		String[] requestUriBits = requestUri.split("/");
+		
+		if(requestUriBits.length < 5) {
+			response.getWriter().append("올바른 요청이 아닙니다.");
+			return;
+		}
+		
 		// DB 연결
 
 		Connection conn = null;
@@ -44,30 +53,8 @@ public class ArticleListServlet extends HttpServlet {
 
 		try {
 			conn = DriverManager.getConnection(Config.getDBUrl(), Config.getDBUser(), Config.getDBPassword());
-			
-			int itemsInAPage = 15;
-			int page = 1;
-			if(request.getParameter("page") != null) {
-				page = Integer.parseInt(request.getParameter("page"));
-			}
-			int limitFrom = (page - 1) * itemsInAPage;
-			
-			SecSql articleCountSql = SecSql.from("SELECT COUNT(*)");
-			articleCountSql.append("FROM article");
-			
-			int articleCountNum = DBUtil.selectRowIntValue(conn, articleCountSql);
-			int pageCountNum = (int)Math.ceil((double)articleCountNum / itemsInAPage);
 
-			// 게시글 작성자 포함한 게시글 보내기
-			SecSql sql = SecSql.from("SELECT A.*, M.name AS writer");
-			sql.append("FROM article AS A");
-			sql.append("INNER JOIN `member` AS M");
-			sql.append("ON A.memberId = M.id");
-			sql.append("ORDER BY A.id DESC");
-			sql.append("LIMIT ?, ?", limitFrom, itemsInAPage);
-
-			List<Map<String, Object>> articleRows = DBUtil.selectRows(conn, sql);
-			
+			// 모든 요청에 응답 전에 무조건 실행되어야 함
 			HttpSession session = request.getSession();
 			
 			boolean isLogined = false;
@@ -78,7 +65,7 @@ public class ArticleListServlet extends HttpServlet {
 				isLogined = true;
 				loginedMemberId = (int)session.getAttribute("loginedMemberId");
 				
-				sql = SecSql.from("SELECT * FROM `member`");
+				SecSql sql = SecSql.from("SELECT * FROM `member`");
 				sql.append("WHERE id = ?", loginedMemberId);
 				
 				loginedMemberRow = DBUtil.selectRow(conn, sql);
@@ -87,12 +74,20 @@ public class ArticleListServlet extends HttpServlet {
 			request.setAttribute("isLogined", isLogined);
 			request.setAttribute("loginedMemberId", loginedMemberId);
 			request.setAttribute("loginedMemberRow", loginedMemberRow);
-
-			request.setAttribute("articleRows", articleRows);
-			request.setAttribute("pageCountNum", pageCountNum);
-			request.setAttribute("page", page);
-			request.getRequestDispatcher("/jsp/article/list.jsp").forward(request, response);
-
+			
+			// 페이지마다 다른 기능 수행
+			
+			String controllerName = requestUriBits[3];
+			String actionMethodName = requestUriBits[4];
+			
+			if(controllerName.equals("article")) {
+				ArticleController articleController = new ArticleController(request, response, conn);
+				
+				if(actionMethodName.equals("list")) {
+					articleController.showList();
+				}
+			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (SQLErrorException e) {
@@ -107,10 +102,11 @@ public class ArticleListServlet extends HttpServlet {
 			}
 		}
 	}
-
+	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+		doGet(request, response);
 	}
+
 }
