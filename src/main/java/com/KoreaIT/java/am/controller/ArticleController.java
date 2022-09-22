@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
+import com.KoreaIT.java.am.dto.Article;
 import com.KoreaIT.java.am.service.ArticleService;
 
 import jakarta.servlet.ServletException;
@@ -36,9 +37,9 @@ public class ArticleController {
 		
 		int totalPage = articleService.getForPrintListTotalPage();
 
-		List<Map<String, Object>> articleRows = articleService.getForPrintArticleRows(page);
+		List<Article> articles = articleService.getForPrintArticles(page);
 		
-		request.setAttribute("articleRows", articleRows);
+		request.setAttribute("articles", articles);
 		request.setAttribute("totalPage", totalPage);
 		request.setAttribute("page", page);
 		request.getRequestDispatcher("/jsp/article/list.jsp").forward(request, response);

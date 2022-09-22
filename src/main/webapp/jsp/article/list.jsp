@@ -1,10 +1,11 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
+<%@ page import="com.KoreaIT.java.am.dto.Article" %>
 <%@ page import="java.time.LocalDateTime" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
-List<Map<String, Object>> articleRows = (List<Map<String, Object>>)request.getAttribute("articleRows");
+List<Article> articles = (List<Article>)request.getAttribute("articles");
 List<Map<String, Object>> memberRows = (List<Map<String, Object>>)request.getAttribute("memberRows");
 int totalPage = (int)request.getAttribute("totalPage");
 int currentPage = (int)request.getAttribute("page");
@@ -28,7 +29,7 @@ int currentPage = (int)request.getAttribute("page");
 		<table border="1" bordercolor="navy">
 			<colgroup>
 				<col width="50"/>
-				<col width=250"/>
+				<col width="250"/>
 				<col width="150"/>
 				<col width="200"/>
 			</colgroup>
@@ -41,14 +42,14 @@ int currentPage = (int)request.getAttribute("page");
 				<th>수정</th>
 			</tr>
 		
-			<% for(Map<String, Object> articleRow : articleRows) { %>
+			<% for(Article article : articles) { %>
 			<tr>
-				<td><%=articleRow.get("id") %></td>
-				<td><a href="detail?id=<%=(int)articleRow.get("id") %>"><%=articleRow.get("title") %></a></td>
-				<td><%=articleRow.get("writer") %></td>
-				<td><%=articleRow.get("regDate") %></td>
-				<td><a href="delete?id=<%=articleRow.get("id") %>">삭제하기</a></td>
-				<td><a href="modify?id=<%=articleRow.get("id") %>">수정하기</a></td>
+				<td><%=article.id %></td>
+				<td><a href="detail?id=<%=article.id %>"><%=article.title %></a></td>
+				<td><%=article.extra__writer %></td>
+				<td><%=article.regDate %></td>
+				<td><a href="delete?id=<%=article.id %>">삭제하기</a></td>
+				<td><a href="modify?id=<%=article.id %>">수정하기</a></td>
 			</tr>
 			<% } %>
 		</table>
